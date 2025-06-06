@@ -4,6 +4,9 @@ import viewEngine from "./configs/viewEngine.js";
 import webRoutes from "./routes/web.js";
 
 let app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 // config view engine
 viewEngine(app);
 // config web routes
