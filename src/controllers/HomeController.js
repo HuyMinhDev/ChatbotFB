@@ -5,31 +5,64 @@ let getHomePage = (req, res) => {
   return res.render("homepage.ejs");
 };
 
+// let postWebhook = (req, res) => {
+//   let body = req.body;
+
+//   // Check the webhook event is from a page subscription
+//   if (body.object === "page") {
+//     // Iterate over each entry - there may be multiple if batched
+//     body.entry.forEach(function (entry) {
+//       // Gets the body of the webhook event
+//       // let webhook_event = entry.messaging[0];
+//       // console.log(webhook_event);
+
+//       // Get the sender PSID
+//       // let sender_psid = webhook_event.sender.id;
+//       // console.log("Sender PSID: " + sender_psid);
+
+//       // Gets the body of the webhook event
+//       let webhook_event = entry.messaging[0];
+//       console.log(webhook_event);
+
+//       // Get the sender PSID
+//       let sender_psid = webhook_event.sender.id;
+//       console.log("Sender PSID: " + sender_psid);
+
+//       // Check if the event is a message or postback and
+//       // pass the event to the appropriate handler function
+//       if (webhook_event.message) {
+//         handleMessage(sender_psid, webhook_event.message);
+//       } else if (webhook_event.postback) {
+//         handlePostback(sender_psid, webhook_event.postback);
+//       }
+//     });
+
+//     // Return a '200 OK' response to all requests
+//     res.status(200).send("EVENT_RECEIVED");
+//   } else {
+//     // Return a '404 Not Found' if event is not from a page subscription
+//     res.sendStatus(404);
+//   }
+//   console.log(webhook_event);
+// };
 let postWebhook = (req, res) => {
   let body = req.body;
 
+  // ✅ In toàn bộ body nhận được từ Facebook để debug
+  console.log("🌐 Webhook received:");
+  console.log(JSON.stringify(body, null, 2)); // in đẹp JSON
+
   // Check the webhook event is from a page subscription
   if (body.object === "page") {
-    // Iterate over each entry - there may be multiple if batched
     body.entry.forEach(function (entry) {
-      // Gets the body of the webhook event
-      // let webhook_event = entry.messaging[0];
-      // console.log(webhook_event);
-
-      // Get the sender PSID
-      // let sender_psid = webhook_event.sender.id;
-      // console.log("Sender PSID: " + sender_psid);
-
-      // Gets the body of the webhook event
       let webhook_event = entry.messaging[0];
-      console.log(webhook_event);
 
-      // Get the sender PSID
+      // ✅ Log chi tiết từng event
+      console.log("📨 Incoming message event:", webhook_event);
+
       let sender_psid = webhook_event.sender.id;
-      console.log("Sender PSID: " + sender_psid);
+      console.log("👤 Sender PSID:", sender_psid);
 
-      // Check if the event is a message or postback and
-      // pass the event to the appropriate handler function
       if (webhook_event.message) {
         handleMessage(sender_psid, webhook_event.message);
       } else if (webhook_event.postback) {
@@ -37,14 +70,14 @@ let postWebhook = (req, res) => {
       }
     });
 
-    // Return a '200 OK' response to all requests
     res.status(200).send("EVENT_RECEIVED");
   } else {
-    // Return a '404 Not Found' if event is not from a page subscription
     res.sendStatus(404);
   }
-  console.log(webhook_event);
+
+  // ❌ KHÔNG đặt console.log(webhook_event) ở đây vì biến không tồn tại
 };
+
 let getWebhook = (req, res) => {
   let VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 
