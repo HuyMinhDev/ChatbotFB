@@ -194,23 +194,27 @@ function callSendAPI(sender_psid, response) {
     }
   );
 }
-let setupProfile = (req, res) => {
+let setupProfile = async (req, res) => {
   // call profile FB API
   let request_body = {
-    get_started: "GET_STARTED",
-    whitelisted_domains: "https://chatbotfb-gaw4.onrender.com/",
+    get_started: {
+      payload: "GET_STARTED",
+    },
+    whitelisted_domains: ["https://chatbotfb-gaw4.onrender.com/"],
   };
 
   // Send the HTTP request to the Messenger Platform
-  request(
+  await request(
     {
       // uri: "https://graph.facebook.com/v2.6/me/messages",
-      uri: `https://graph.facebook.com/v21.0/me/messager_profile?access_token=${PAGE_ACCESS_TOKEN}`,
+      uri: `https://graph.facebook.com/v21.0/me/messenger_profile?access_token=${PAGE_ACCESS_TOKEN}`,
+
       qs: { access_token: PAGE_ACCESS_TOKEN },
       method: "POST",
       json: request_body,
     },
     (err, res, body) => {
+      console.log("Setup profile response:", body);
       if (!err) {
         console.log("Setup profile successfully!");
       } else {
@@ -218,6 +222,7 @@ let setupProfile = (req, res) => {
       }
     }
   );
+  return res.send("Setup profile successfully!");
 };
 module.exports = {
   getHomePage: getHomePage,
